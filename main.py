@@ -11,7 +11,7 @@ import os
 import time
 import neat
 #import visualize
-#import pickle
+import pickle
 pygame.font.init()  # init font
 
 WIN_WIDTH = 600
@@ -133,7 +133,7 @@ class Pipe():
     """
     represents a pipe object
     """
-    GAP = 200
+    GAP = 160
     VEL = 5
 
     def __init__(self, x):
@@ -334,7 +334,7 @@ def eval_genomes(genomes, config):
 
     run = True
     while run and len(birds) > 0:
-        clock.tick(60)
+        clock.tick(100)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -396,6 +396,56 @@ def eval_genomes(genomes, config):
                 birds.pop(birds.index(bird))
 
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
+
+def play_with_best_bird(pickle_file, config):
+    with open(pickle_file, "rb") as f:
+        winner = pickle.load(f)
+    net = neat.nn.FeedForwardNetwork.create(winner, config)
+    bird = Bird(230, 350)
+    base = Base(FLOOR)
+    pipes = [Pipe(700)]
+    win = WIN
+    clock = pygame.time.Clock()
+    score = 0
+    run = True
+    while run:
+        clock.tick(30)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                quit()
+        pipe_ind = 0
+        if len(pipes) > 1 and bird.x > pipes[0].x + pipes[0].PIPE_TOP.get_width():
+            pipe_ind = 1
+        bird.move()
+        output = net.activate((bird.y,
+                               abs(bird.y - pipes[pipe_ind].height),
+                               abs(bird.y - pipes[pipe_ind].bottom)))
+        if output[0] > 0.5:
+            bird.jump()
+        base.move()
+        rem = []
+        add_pipe = False
+        for pipe in pipes:
+            pipe.move()
+            if pipe.collide(bird, win):
+                run = False
+                break
+            if not pipe.passed and pipe.x < bird.x:
+                pipe.passed = True
+                add_pipe = True
+            if pipe.x + pipe.PIPE_TOP.get_width() < 0:
+                rem.append(pipe)
+        if add_pipe:
+            score += 1
+            pipes.append(Pipe(WIN_WIDTH))
+        for r in rem:
+            pipes.remove(r)
+        if bird.y + bird.img.get_height() >= FLOOR or bird.y < -50:
+            run = False
+            break
+        draw_window(win, [bird], pipes, base, score, gen=1, pipe_ind=pipe_ind)
 
 def run(config_file):
     """
