@@ -394,7 +394,7 @@ def eval_genomes(genomes, config):
                 nets.pop(birds.index(bird))
                 ge.pop(birds.index(bird))
                 birds.pop(birds.index(bird))
-                if score > 1000 
+                if score > 1000: 
                     break
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
 
