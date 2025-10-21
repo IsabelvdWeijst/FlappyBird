@@ -10,8 +10,9 @@ import random
 import os
 import time
 import neat
-#import visualize
 import pickle
+#import visualize
+#import pickle
 pygame.font.init()  # init font
 
 WIN_WIDTH = 600
@@ -396,6 +397,10 @@ def eval_genomes(genomes, config):
                 birds.pop(birds.index(bird))
 
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
+        if len(birds) == 1 #als de laaste bird over is
+        best_bird_genome = ge[0]
+        with open("best_bird_genome.pkl", "wb") as f:
+            pickle.dump(best_bird_genome, f, protocol=pickle.HIGHEST_PROTOCOL)  
 
 def play_with_best_bird(pickle_file, config):
     with open(pickle_file, "rb") as f:
@@ -471,7 +476,7 @@ def run(config_file):
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
-
+        
     # Save the winner genome to a pickle .pkl file
     #with open("winner.pkl", "wb") as f:
     #    pickle.dump(winner, f)

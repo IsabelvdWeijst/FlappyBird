@@ -394,7 +394,8 @@ def eval_genomes(genomes, config):
                 nets.pop(birds.index(bird))
                 ge.pop(birds.index(bird))
                 birds.pop(birds.index(bird))
-
+                if score > 1000 
+                    break
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
 
 def run(config_file):
@@ -418,6 +419,9 @@ def run(config_file):
 
     # Run for up to 50 generations.
     winner = p.run(eval_genomes, 50)
+    with open("best_bird.pkl", "wb") as f:
+        pickle.dump(winner, f)
+    print("Best bird saved as best_bird.pkl")
 
     # show final stats
     print('\nBest genome:\n{!s}'.format(winner))
