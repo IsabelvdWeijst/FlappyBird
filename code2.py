@@ -485,25 +485,26 @@ def run(config_file):
         pickle.dump(winner, f)
     print("Winner genome saved as best_bird_genome.pkl")
 
-
-
-
-
 if __name__ == '__main__':
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
-    run(config_path)
 
-    # Laat de beste vogel spelen
-    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                                neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                                config_path)
-    print("\nStarting best bird demo...")
-    time.sleep(2)
-    play_with_best_bird("best_bird_genome.pkl", config)
-
-
+    # Load NEAT config first
+    config = neat.config.Config(
+        neat.DefaultGenome,
+        neat.DefaultReproduction,
+        neat.DefaultSpeciesSet,
+        neat.DefaultStagnation,
+        config_path
+    )
+    if not os.path.exists("best_bird_genome.pkl"):
+            print("Geen best_bird_genome.pkl gevonden. Train eerst een model.")
+    else:
+            print("\nStarting best bird demo...")
+            time.sleep(2)
+            play_with_best_bird("best_bird_genome.pkl", config)
+    
     pygame.quit()
