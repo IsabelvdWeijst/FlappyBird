@@ -397,8 +397,8 @@ def eval_genomes(genomes, config):
                 birds.pop(birds.index(bird))
 
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
-        # Als er nog maar 1 vogeltje over is, moet zijn genome opgeslagen worden. Dit hoeft slechts 1 keer gedaan te worden (AI geholpen)
-        if len(birds) == 1 and not hasattr(eval_genomes, "saved_best"):
+        # Als de score hoger is dan 100, moet zijn genome opgeslagen worden. Dit hoeft slechts 1 keer gedaan te worden 
+        if score > 500 and not hasattr(eval_genomes, "saved_best"):
             best_bird_genome = ge[0]
             with open("best_bird_genome.pkl", "wb") as f:
                 pickle.dump(best_bird_genome, f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -417,7 +417,7 @@ def play_with_best_bird(pickle_file, config):
     score = 0
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(100)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -486,11 +486,6 @@ def run(config_file):
     print("Winner genome saved as best_bird_genome.pkl")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Flappy Bird NEAT AI - Train or watch your bird play!')
-    parser.add_argument('--mode', type=str, default='train', choices=['train', 'demo'],
-                        help='Mode to run: "train" to train the AI (default), "demo" to watch the trained bird play')
-    args = parser.parse_args()
-    
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
@@ -506,20 +501,11 @@ if __name__ == '__main__':
         config_path
     )
     
-    if args.mode == 'demo':
-        # Demo mode - watch the trained bird play
-        if not os.path.exists("best_bird_genome.pkl"):
-            print("No trained bird found! Please train first by running: python main.py --mode train")
-            print("Or just run: python main.py")
-        else:
-            print("Loading your trained bird...")
-            print("Watch it play! (Close the window to exit)")
-            play_with_best_bird("best_bird_genome.pkl", config)
+    # Controleer of het bestand bestaat
+    if not os.path.exists("best_bird_genome.pkl"):
+        print("Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
     else:
-        # Training mode (default)
-        print("Starting training mode...")
-        print("The AI will train for up to 50 generations.")
-        print("Watch the fitness scores increase as the bird learns!")
-        run(config_path)
+        print("De beste vogel wordt geladen...")
+        play_with_best_bird("best_bird_genome.pkl", config)
     
     pygame.quit()
