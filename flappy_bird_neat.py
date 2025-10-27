@@ -11,7 +11,7 @@ import os
 import time
 import neat
 #import visualize
-#import pickle
+import pickle
 pygame.font.init()  # init font
 
 WIN_WIDTH = 600

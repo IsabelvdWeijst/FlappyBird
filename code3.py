@@ -491,5 +491,20 @@ if __name__ == '__main__':
     # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
-    run(config_path)
+
+    # Load NEAT config first
+    config = neat.config.Config(
+        neat.DefaultGenome,
+        neat.DefaultReproduction,
+        neat.DefaultSpeciesSet,
+        neat.DefaultStagnation,
+        config_path
+    )
+    if not os.path.exists("best_bird_genome.pkl"):
+            print("Geen best_bird_genome.pkl gevonden. Train eerst een model.")
+    else:
+            print("\nStarting best bird demo...")
+            time.sleep(2)
+            play_with_best_bird("best_bird_genome.pkl", config)
+
     pygame.quit()
