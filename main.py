@@ -11,8 +11,8 @@ import os
 import time
 import neat
 import pickle
+import argparse
 #import visualize
-#import pickle
 pygame.font.init()  # init font
 
 WIN_WIDTH = 600
@@ -486,10 +486,40 @@ def run(config_file):
     print("Winner genome saved as best_bird_genome.pkl")
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Flappy Bird NEAT AI - Train or watch your bird play!')
+    parser.add_argument('--mode', type=str, default='train', choices=['train', 'demo'],
+                        help='Mode to run: "train" to train the AI (default), "demo" to watch the trained bird play')
+    args = parser.parse_args()
+    
     # Determine path to configuration file. This path manipulation is
     # here so that the script will run successfully regardless of the
     # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
-    run(config_path)
+    
+    # Load NEAT config
+    config = neat.config.Config(
+        neat.DefaultGenome,
+        neat.DefaultReproduction,
+        neat.DefaultSpeciesSet,
+        neat.DefaultStagnation,
+        config_path
+    )
+    
+    if args.mode == 'demo':
+        # Demo mode - watch the trained bird play
+        if not os.path.exists("best_bird_genome.pkl"):
+            print("No trained bird found! Please train first by running: python main.py --mode train")
+            print("Or just run: python main.py")
+        else:
+            print("Loading your trained bird...")
+            print("Watch it play! (Close the window to exit)")
+            play_with_best_bird("best_bird_genome.pkl", config)
+    else:
+        # Training mode (default)
+        print("Starting training mode...")
+        print("The AI will train for up to 50 generations.")
+        print("Watch the fitness scores increase as the bird learns!")
+        run(config_path)
+    
     pygame.quit()
