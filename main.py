@@ -417,7 +417,7 @@ def play_with_best_bird(pickle_file, config):
     score = 0
     run = True
     while run:
-        clock.tick(100)
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -501,11 +501,15 @@ if __name__ == '__main__':
         config_path
     )
     
-    # Controleer of het bestand bestaat
-    if not os.path.exists("best_bird_genome.pkl"):
-        print("Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
-    else:
-        print("De beste vogel wordt geladen...")
-        play_with_best_bird("best_bird_genome.pkl", config)
+# Start de training
+    print("Starting training mode...")
+    print("The AI will train for up to 50 generations.")
+    print("Watch the fitness scores increase as the bird learns!")
+    run(config_path)
+    
+    # Na training, speel met de beste vogel
+    print("Loading your trained bird...")
+    print("Watch it play! (Close the window to exit)")
+    play_with_best_bird("best_bird_genome.pkl", config)
     
     pygame.quit()
