@@ -11,8 +11,8 @@ import os
 import time
 import neat
 import pickle
+import argparse
 #import visualize
-#import pickle
 pygame.font.init()  # init font
 
 WIN_WIDTH = 600
@@ -397,8 +397,8 @@ def eval_genomes(genomes, config):
                 birds.pop(birds.index(bird))
 
         draw_window(WIN, birds, pipes, base, score, gen, pipe_ind)
-        # Als er nog maar 1 vogeltje over is, moet zijn genome opgeslagen worden. Dit hoeft slechts 1 keer gedaan te worden (AI geholpen)
-        if len(birds) == 1 and not hasattr(eval_genomes, "saved_best"):
+        # Als de score hoger is dan 500, moet zijn genome opgeslagen worden. Dit hoeft slechts 1 keer gedaan te worden. Dus we voegen een attribuut toe aan eval_genomes om dit bij te houden. We moesten het aanpassen dat het opslaat na een score van 500, omdat als je eenmaal een beste vogel hebt, zal die oneindig door blijven spelen en de score oneindig blijven stijgen. Door dit te doen, zullen we de beste vogel opslaan zodra de score 500 bereikt, ipv moeten wachten tot de vogel dood gaat, wat op een gegeven moment niet meer zal gebeuren.
+        if score > 500 and not hasattr(eval_genomes, "saved_best"):
             best_bird_genome = ge[0]
             with open("best_bird_genome.pkl", "wb") as f:
                 pickle.dump(best_bird_genome, f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -417,7 +417,7 @@ def play_with_best_bird(pickle_file, config):
     score = 0
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(100) # aangepast van 30 naar 100 zodat de beste vogel sneller beweegt
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -492,7 +492,7 @@ if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
 
-    # Load NEAT config first
+    # Load NEAT config
     config = neat.config.Config(
         neat.DefaultGenome,
         neat.DefaultReproduction,
@@ -500,11 +500,11 @@ if __name__ == '__main__':
         neat.DefaultStagnation,
         config_path
     )
-    if not os.path.exists("best_bird_genome.pkl"):
-            print("Geen best_bird_genome.pkl gevonden. Train eerst een model.")
-    else:
-            print("\nStarting best bird demo...")
-            time.sleep(2)
-            play_with_best_bird("best_bird_genome.pkl", config)
-    
+
+# Start de training
+    print("Starting training mode...")
+    print("The AI will train for up to 50 generations.")
+    print("Watch the fitness scores increase as the bird learns!")
+    run(config_path)
+
     pygame.quit()
