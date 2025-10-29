@@ -134,7 +134,7 @@ class Pipe():
     """
     represents a pipe object
     """
-    GAP = 160
+    GAP = 160 #we hebben de gap kleiner gemaakt naar 160
     VEL = 5
 
     def __init__(self, x):
@@ -335,7 +335,7 @@ def eval_genomes(genomes, config):
 
     run = True
     while run and len(birds) > 0:
-        clock.tick(100)
+        clock.tick(100) # 100fps zodat het vogeltje sneller beweegt
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -472,7 +472,7 @@ def run(config_file):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(1))  # Slaat elke generatie op
+    p.add_reporter(neat.Checkpointer(1))  # Slaat elke generatie op zodat training hervat kan worden
 
     # Run for up to 50 generations.
     winner = p.run(eval_genomes, 50)
@@ -504,8 +504,6 @@ if __name__ == '__main__':
     # Controleer of het bestand bestaat
     if not os.path.exists("best_bird_genome.pkl"):
         print("Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
-
-    # Vervolgens met de beste vogel beginnen te spelen als is gecontroleerd dat het pkl bestand inderdaad bestaat
     else:
         print("De beste vogel wordt geladen...")
         play_with_best_bird("best_bird_genome.pkl", config)

@@ -503,9 +503,9 @@ if __name__ == '__main__':
 
     # Controleer of het bestand bestaat
     if not os.path.exists("best_bird_genome.pkl"):
-        print("⚠️ Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
+        print("Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
     else:
-        print("🎮 De beste vogel wordt geladen...")
+        print("De beste vogel wordt geladen...")
         play_with_best_bird("best_bird_genome.pkl", config)
 
     pygame.quit()
