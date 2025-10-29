@@ -134,7 +134,7 @@ class Pipe():
     """
     represents a pipe object
     """
-    GAP = 160
+    GAP = 160 #we hebben de gap kleiner gemaakt naar 160
     VEL = 5
 
     def __init__(self, x):
@@ -335,7 +335,7 @@ def eval_genomes(genomes, config):
 
     run = True
     while run and len(birds) > 0:
-        clock.tick(100)
+        clock.tick(100) # 100fps zodat het vogeltje sneller beweegt
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -472,7 +472,7 @@ def run(config_file):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    p.add_reporter(neat.Checkpointer(1))  # Slaat elke generatie op
+    p.add_reporter(neat.Checkpointer(1))  # Slaat elke generatie op zodat training hervat kan worden
 
     # Run for up to 50 generations.
     winner = p.run(eval_genomes, 50)
@@ -506,5 +506,4 @@ if __name__ == '__main__':
     print("The AI will train for up to 50 generations.")
     print("Watch the fitness scores increase as the bird learns!")
     run(config_path)
-
     pygame.quit()
