@@ -491,7 +491,7 @@ if __name__ == '__main__':
     # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
-    
+
     # Load NEAT config
     config = neat.config.Config(
         neat.DefaultGenome,
@@ -500,12 +500,10 @@ if __name__ == '__main__':
         neat.DefaultStagnation,
         config_path
     )
-    
-    # Controleer of het bestand bestaat
-    if not os.path.exists("best_bird_genome.pkl"):
-        print("⚠️ Geen best_bird_genome.pkl gevonden! Train eerst een vogel.")
-    else:
-        print("🎮 De beste vogel wordt geladen...")
-        play_with_best_bird("best_bird_genome.pkl", config)
-    
+
+# Start de training
+    print("Starting training mode...")
+    print("The AI will train for up to 50 generations.")
+    print("Watch the fitness scores increase as the bird learns!")
+    run(config_path)
     pygame.quit()
